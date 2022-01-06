@@ -1,0 +1,1 @@
+you can see a write up for this project [here](https://canon.bradleyboxer.xyz/posts/ipod)
