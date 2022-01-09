@@ -1,11 +1,13 @@
 const express = require('express');
-const { sleep, downloadSong, downloadArtwork, applyMetadata } = require('./new_downloader');
+import { sleep, downloadSong, downloadArtwork, applyMetadata } from './new_downloader';
+import { SongMetadataEntry } from './types';
+
 const app = express();
 const port = 30500;
 
 app.use(express.json());
 
-const downloadQueue = [];
+const downloadQueue: SongMetadataEntry[] = [];
 
 app.get('/', (req, res) => {
   res.send('👋');

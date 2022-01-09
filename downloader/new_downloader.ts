@@ -1,3 +1,5 @@
+import { SongMetadataEntry } from './types';
+
 const fs = require('fs');
 const ffmetadata = require("ffmetadata");
 
@@ -10,15 +12,15 @@ const streamPipeline = promisify(pipeline);
 
 const sleep = async ms => await new Promise(r => setTimeout(r, ms));
 
-const downloadSong = async entry => {
+const downloadSong = async (entry: SongMetadataEntry) => {
   const { id } = entry;
   await exec(`yt-dlp -x --audio-format mp3 -o "./new_songs/temp/%(channel)s-%(title)s.%(ext)s" https://www.youtube.com/watch?v=${id}`);
   return fs.readdirSync('./new_songs/temp/')[0];
 }
 
-const applyMetadata = async (filename, entry) => {
+const applyMetadata = async (filename: string, entry: SongMetadataEntry) => {
   const { artist, title, date, album, id } = entry;
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     ffmetadata.write(
       `./new_songs/temp/${filename}`,
       { artist, title, album, date },
@@ -31,7 +33,7 @@ const applyMetadata = async (filename, entry) => {
   });
 }
 
-const downloadArtwork = async entry => {
+const downloadArtwork = async (entry: SongMetadataEntry) => {
   const { artworkUrl, id } = entry;
   const response = await fetch(artworkUrl);
 
@@ -39,4 +41,4 @@ const downloadArtwork = async entry => {
   await streamPipeline(response.body, fs.createWriteStream(`./new_songs/artwork/${id}.jpg`));
 }
 
-module.exports = { sleep, downloadSong, downloadArtwork, applyMetadata };
+export { sleep, downloadSong, downloadArtwork, applyMetadata };
