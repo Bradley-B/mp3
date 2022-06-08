@@ -19,11 +19,15 @@ const downloadSong = async (entry: SongMetadataEntry) => {
 }
 
 const applyMetadata = async (filename: string, entry: SongMetadataEntry) => {
-  const { artist, title, date, album, id } = entry;
+  const { artist, title, date, album, id, trackNumber, totalTracks } = entry;
+  const track = {
+    ...(trackNumber !== undefined && totalTracks !== undefined) && { track: `${trackNumber}/${totalTracks}` }
+  };
+
   return new Promise<void>((resolve, reject) => {
     ffmetadata.write(
       `./new_songs/temp/${filename}`,
-      { artist, title, album, date },
+      { artist, title, album, date, ...track },
       { 'id3v1': true, 'id3v2.3': true, attachments: [`./new_songs/artwork/${id}.jpg`] },
       (err) => {
         fs.renameSync(`./new_songs/temp/${filename}`, `./new_songs/${artist} - ${title}.mp3`);

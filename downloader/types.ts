@@ -4,6 +4,8 @@ interface SongMetadataEntry {
     title: string,
     album: string,
     date: string,
+    trackNumber: number | undefined,
+    totalTracks: number | undefined,
     artworkUrl: string
 }
 
